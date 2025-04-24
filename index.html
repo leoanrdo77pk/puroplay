@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Filmes e Séries</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <button class="menu-btn" onclick="toggleMenu()">&#9776;</button>
+
+  <div id="menuLateral" class="menu-lateral">
+    <a href="filmes/index.html">Filmes</a>
+    <a href="series/index.html">Séries</a>
+  </div>
+
+  <div class="content">
+    <h1>Filmes e Séries</h1>
+    <h3 style="text-align:center;">Em destaque</h3>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Buscar...">
+    </div>
+
+    <div class="catalogo" id="catalogo">
+      <!-- Cards aqui como exemplo -->
+      <div class="card">
+        <img src="https://assets.fxnetworks.com/cms-next/production/3f013aba-5074-4ca4-a10c-12d88ed4eaa6.jpg" alt="Justified">
+        <a href="#">Justified</a>
+      </div>
+      <div class="card">
+        <img src="https://infinitasvidas.wordpress.com/wp-content/uploads/2015/10/poster-breaking-bad.png" alt="Breaking Bad">
+        <a href="#">Breaking Bad</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
 
