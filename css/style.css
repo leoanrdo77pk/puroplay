@@ -1,1 +1,190 @@
+ <style>
+    body {
+      font-family: Poppins, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: white;
+    }
 
+    h1 {
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    .menu-lateral {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      overflow-y: auto;
+      transition: 0.5s;
+      padding-top: 60px;
+      z-index: 999;
+    }
+
+    .menu-lateral a {
+      padding: 10px 15px;
+      text-decoration: none;
+      font-size: 15px;
+      color: white;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .menu-lateral a:hover {
+      background-color: limegreen;
+    }
+
+    .submenu {
+      display: none;
+      background-color: #333;
+      padding-left: 20px;
+    }
+
+    .menu-lateral .active .submenu {
+      display: block;
+    }
+
+    .menu-btn {
+      font-size: 30px;
+      cursor: pointer;
+      background-color: transparent;
+      color: white;
+      border: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+
+    .content {
+      transition: margin-left .5s;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .search-box {
+      margin: 20px auto;
+      max-width: 400px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      max-width: 1000px;
+      margin: 0 auto;
+      gap: 20px;
+      padding-bottom: 40px;
+    }
+
+    .menu-lateral {
+    transition: width 0.4s ease;
+  }
+
+  .menu-lateral a {
+    transition: background-color 0.3s ease;
+  }
+
+  .card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
+  }
+
+  .card:nth-child(1) { animation-delay: 0.1s; }
+  .card:nth-child(2) { animation-delay: 0.2s; }
+  .card:nth-child(3) { animation-delay: 0.3s; }
+  .card:nth-child(4) { animation-delay: 0.4s; }
+  .card:nth-child(5) { animation-delay: 0.5s; }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .menu-btn {
+    transition: transform 0.3s ease;
+  }
+
+  .menu-btn:hover {
+    transform: scale(1.1);
+  }
+
+  .card a {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .card:hover a {
+    background-color: #00cc44;
+    color: #000;
+  }
+    .card {
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.7);
+  transition: transform 0.2s, opacity 0.5s;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* Remover efeito de zoom nos cards filtrados (visíveis por busca) */
+.card[style*="flex"]:hover {
+  transform: none !important;
+}
+
+    @media (max-width: 600px) {
+      .catalogo {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .card {
+      background-color: #1f1f1f;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.7);
+      transition: transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+    }
+
+    .card a {
+      display: block;
+      padding: 10px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      background-color: limegreen;
+    }
+  </style>
