@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "index.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    // Redirecionamento para o primeiro site
+    { "src": "/redirect/futebol7k", "dest": "https://futebol7k.com" },
+    
+    // Redirecionamento para o segundo site
+    { "src": "/redirect/futemais", "dest": "https://apk.futemais.net/app2/" },
+
+    // Rota padrão
+    { "src": "/(.*)", "dest": "/index.js" }
+  ]
+}
