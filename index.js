@@ -22,21 +22,21 @@ module.exports = async (req, res) => {
             .replace(/href='\/([^']+)'/g, "href='/$1'")
             .replace(/href="\/([^"]+)"/g, 'href="/$1"')
             .replace(/action="\/([^"]+)"/g, 'action="/$1"')
-            .replace(/<base[^>]*>/gi, '');
+            .replace(/<base[^>]*>/gi, '')
+            .replace(/src=['"][^'"]+['"]/g, (match) => {
+              // Reescrever links de recursos como JS, CSS, imagens
+              return match.replace(/https:\/\/maxfute\.vu\//g, '/');
+            });
 
           // Remover ou alterar o título e o ícone
           data = data
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')  // Coloque aqui o título desejado
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');  // Remove o ícone
-            
-
-
+          
           // Injeção segura de banner no final do body com verificação
           let finalHtml;
           if (data.includes('</body>')) {
             finalHtml = data.replace('</body>', `
-
-
 
 
 
@@ -56,9 +56,10 @@ module.exports = async (req, res) => {
           } else {
             // Se não tiver </body>, adiciona manualmente
             finalHtml = `
+
 ${data}
 <div id="custom-footer">
-
+  <!-- Seu conteúdo personalizado -->
 </div>
 <style>
   #custom-footer {
