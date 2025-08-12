@@ -11,6 +11,13 @@ module.exports = async (req, res) => {
         'Referer': 'https://maxfute.vu/',
       }
     }, (resp) => {
+      if (resp.statusCode !== 200) {
+        console.error(`Erro ao carregar a página: ${resp.statusCode}`);
+        res.statusCode = 500;
+        res.end('Erro ao carregar conteúdo');
+        return;
+      }
+
       let data = '';
 
       resp.on('data', chunk => data += chunk);
@@ -24,7 +31,9 @@ module.exports = async (req, res) => {
             .replace(/action="\/([^"]+)"/g, 'action="/$1"')
             .replace(/<base[^>]*>/gi, '')
             .replace(/src=['"][^'"]+['"]/g, (match) => {
-              // Reescrever links de recursos como JS, CSS, imagens
+              return match.replace(/https:\/\/maxfute\.vu\//g, '/');
+            })
+            .replace(/background-image:\s*url\(['"][^'"]+['"]\)/g, (match) => {
               return match.replace(/https:\/\/maxfute\.vu\//g, '/');
             });
 
@@ -32,50 +41,49 @@ module.exports = async (req, res) => {
           data = data
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')  // Coloque aqui o título desejado
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');  // Remove o ícone
-          
+
           // Injeção segura de banner no final do body com verificação
           let finalHtml;
           if (data.includes('</body>')) {
             finalHtml = data.replace('</body>', `
-
-
-
-<style>
-  #custom-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: transparent;
-    text-align: center;
-    z-index: 9999;
-  }
-  body { padding-bottom: 120px !important; }
-</style>
-</body>`);
+              <style>
+                #custom-footer {
+                  position: fixed;
+                  bottom: 0;
+                  left: 0;
+                  width: 100%;
+                  background: transparent;
+                  text-align: center;
+                  z-index: 9999;
+                }
+                body { padding-bottom: 120px !important; }
+              </style>
+              </body>`);
           } else {
             // Se não tiver </body>, adiciona manualmente
             finalHtml = `
-
-${data}
-<div id="custom-footer">
-  <!-- Seu conteúdo personalizado -->
-</div>
-<style>
-  #custom-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: transparent;
-    text-align: center;
-    z-index: 9999;
-  }
-  body { padding-bottom: 120px !important; }
-</style>`;
+              ${data}
+              <div id="custom-footer">
+                <!-- Seu conteúdo personalizado -->
+              </div>
+              <style>
+                #custom-footer {
+                  position: fixed;
+                  bottom: 0;
+                  left: 0;
+                  width: 100%;
+                  background: transparent;
+                  text-align: center;
+                  z-index: 9999;
+                }
+                body { padding-bottom: 120px !important; }
+              </style>`;
           }
 
+          // Configurações de CORS e cabeçalhos
           res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+          res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
           res.setHeader('Content-Type', resp.headers['content-type'] || 'text/html');
           res.statusCode = 200;
           res.end(finalHtml);
