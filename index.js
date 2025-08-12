@@ -3,12 +3,12 @@ const https = require('https');
 module.exports = async (req, res) => {
   try {
     const path = req.url === '/' ? '' : req.url;
-    const targetUrl = 'https://futebol7k.com/' + path;
+    const targetUrl = 'https://maxfute.vu/' + path;
 
     https.get(targetUrl, {
       headers: {
         'User-Agent': req.headers['user-agent'] || 'Mozilla/5.0',
-        'Referer': 'https://futebol7k.com/',
+        'Referer': 'https://maxfute.vu/',
       }
     }, (resp) => {
       let data = '';
@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
         try {
           // Reescreve links para manter no domínio Vercel
           data = data
-            .replace(/https:\/\/futebol7k\.com\//g, '/')
+            .replace(/https:\/\/maxfute\.vu\//g, '/')
             .replace(/href='\/([^']+)'/g, "href='/$1'")
             .replace(/href="\/([^"]+)"/g, 'href="/$1"')
             .replace(/action="\/([^"]+)"/g, 'action="/$1"')
@@ -29,8 +29,8 @@ module.exports = async (req, res) => {
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')  // Coloque aqui o título desejado
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');  // Remove o ícone
 
-          // Injetar banner no fim
-          let finalHtml = data;
+          // Injeção do banner no final do body com verificação
+          let finalHtml;
           if (data.includes('</body>')) {
             finalHtml = data.replace('</body>', `
               <div id="custom-footer">
@@ -38,7 +38,6 @@ module.exports = async (req, res) => {
                   <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
                 </a>
               </div>
-
               <style>
                 #custom-footer {
                   position: fixed;
