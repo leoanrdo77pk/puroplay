@@ -31,13 +31,7 @@ module.exports = async (req, res) => {
             
 
 
-          // Injeção segura de banner no final do body com verificação
-          let finalHtml;
-          if (data.includes('</body>')) {
-            finalHtml = data.replace('</body>', 
-
-
-
+  
 
 
 <style>
