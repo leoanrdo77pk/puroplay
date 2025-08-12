@@ -59,7 +59,9 @@ module.exports = async (req, res) => {
             finalHtml = 
 ${data}
 <div id="custom-footer">
-
+  <a href="https://8xbet86.com/" target="_blank">
+    <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
+  </a>
 </div>
 <style>
   #custom-footer {
