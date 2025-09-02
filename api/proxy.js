@@ -122,7 +122,9 @@ module.exports = async (req, res) => {
   <a href="https://s.shopee.com.br/4VSYYPCHx2" target="_blank">
     <img src="https://i.ibb.co/XfhTxV5g/Design-sem-nome-1.png" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
   </a>
-  <!-- Bidvertiser2101686 -->
+  <!-- Begin BidVertiser code -->
+<SCRIPT data-cfasync="false" SRC="//bdv.bidvertiser.com/BidVertiser.dbm?pid=921830&bid=2100252" TYPE="text/javascript"></SCRIPT>
+<!-- End BidVertiser code -->
 </div>
 <style>
   #custom-footer {
@@ -141,7 +143,9 @@ module.exports = async (req, res) => {
   <a href="https://s.shopee.com.br/4VSYYPCHx2" target="_blank">
     <img src="https://i.ibb.co/XfhTxV5g/Design-sem-nome-1.png" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
   </a>
-  <!-- Bidvertiser2101686 -->
+ <!-- Begin BidVertiser code -->
+<SCRIPT data-cfasync="false" SRC="//bdv.bidvertiser.com/BidVertiser.dbm?pid=921830&bid=2100252" TYPE="text/javascript"></SCRIPT>
+<!-- End BidVertiser code -->
 </div>
 <style>
   #custom-footer {
