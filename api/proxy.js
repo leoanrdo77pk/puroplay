@@ -122,9 +122,29 @@ module.exports = async (req, res) => {
   <a href="https://s.shopee.com.br/4VSYYPCHx2" target="_blank">
     <img src="https://i.ibb.co/XfhTxV5g/Design-sem-nome-1.png" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
   </a>
-  <!-- Begin BidVertiser code -->
-<SCRIPT data-cfasync="false" SRC="//bdv.bidvertiser.com/BidVertiser.dbm?pid=921830&bid=2100252" TYPE="text/javascript"></SCRIPT>
-<!-- End BidVertiser code -->
+<div id="ntv_2100252"></div>
+<script type="text/javascript">
+(function(d) {
+	var params =
+	{
+		bvwidgetid: "ntv_2100252",
+		bvlinksownid: 2100252,
+		rows: 1,
+		cols: 1,
+		textpos: "below",
+		imagewidth: 150,
+		mobilecols: 1,
+		cb: (new Date()).getTime()
+	};
+	params.bvwidgetid = "ntv_2100252" + params.cb;
+	d.getElementById("ntv_2100252").id = params.bvwidgetid;
+	var qs = Object.keys(params).reduce(function(a, k){ a.push(k + '=' + encodeURIComponent(params[k])); return a},[]).join(String.fromCharCode(38));
+	var s = d.createElement('script'); s.type='text/javascript';s.async=true;
+	var p = 'https:' == document.location.protocol ? 'https' : 'http';
+	s.src = p + "://cdn.hyperpromote.com/bidvertiser/tags/active/bdvws.js?" + qs;
+	d.getElementById(params.bvwidgetid).appendChild(s);
+})(document);
+</script>
 </div>
 <style>
   #custom-footer {
@@ -143,9 +163,29 @@ module.exports = async (req, res) => {
   <a href="https://s.shopee.com.br/4VSYYPCHx2" target="_blank">
     <img src="https://i.ibb.co/XfhTxV5g/Design-sem-nome-1.png" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
   </a>
- <!-- Begin BidVertiser code -->
-<SCRIPT data-cfasync="false" SRC="//bdv.bidvertiser.com/BidVertiser.dbm?pid=921830&bid=2100252" TYPE="text/javascript"></SCRIPT>
-<!-- End BidVertiser code -->
+<div id="ntv_2100252"></div>
+<script type="text/javascript">
+(function(d) {
+	var params =
+	{
+		bvwidgetid: "ntv_2100252",
+		bvlinksownid: 2100252,
+		rows: 1,
+		cols: 1,
+		textpos: "below",
+		imagewidth: 150,
+		mobilecols: 1,
+		cb: (new Date()).getTime()
+	};
+	params.bvwidgetid = "ntv_2100252" + params.cb;
+	d.getElementById("ntv_2100252").id = params.bvwidgetid;
+	var qs = Object.keys(params).reduce(function(a, k){ a.push(k + '=' + encodeURIComponent(params[k])); return a},[]).join(String.fromCharCode(38));
+	var s = d.createElement('script'); s.type='text/javascript';s.async=true;
+	var p = 'https:' == document.location.protocol ? 'https' : 'http';
+	s.src = p + "://cdn.hyperpromote.com/bidvertiser/tags/active/bdvws.js?" + qs;
+	d.getElementById(params.bvwidgetid).appendChild(s);
+})(document);
+</script>
 </div>
 <style>
   #custom-footer {
