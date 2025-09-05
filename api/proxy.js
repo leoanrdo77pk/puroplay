@@ -1,5 +1,6 @@
 // api/proxy.js
 const fetch = global.fetch || require('node-fetch');
+const puppeteer = require('puppeteer');
 
 const DOMINIO = 'www.boraflix.com';
 
@@ -29,6 +30,19 @@ function rewriteLinks(html) {
   return html;
 }
 
+async function fetchWithPuppeteer(url) {
+  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+  const page = await browser.newPage();
+  await page.setExtraHTTPHeaders({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+    'Referer': `https://${DOMINIO}/`
+  });
+  await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+  const html = await page.content();
+  await browser.close();
+  return html;
+}
+
 module.exports = async (req, res) => {
   try {
     const path = req.url === '/' ? '' : req.url;
@@ -45,25 +59,31 @@ module.exports = async (req, res) => {
       'Host': DOMINIO
     };
 
-    const { data, contentType, res: respOrig } = await fetchContent(url, headers);
+    // 1️⃣ Tenta fetch primeiro
+    let { data, contentType, res: respOrig } = await fetchContent(url, headers);
+    let html = contentType.includes('text/html') ? data.toString('utf-8') : null;
 
-    if (contentType.includes('text/html')) {
-      let html = data.toString('utf-8');
+    // 2️⃣ Se HTML vazio ou não tem conteúdo principal, fallback para Puppeteer
+    if (!html || !html.includes('<div') || html.length < 500) {
+      console.log('Conteúdo insuficiente, usando Puppeteer...');
+      html = await fetchWithPuppeteer(url);
+      contentType = 'text/html';
+    }
 
-      // Remove headers de segurança
-      const resHeaders = { ...Object.fromEntries(respOrig.headers.entries()) };
-      delete resHeaders['x-frame-options'];
-      delete resHeaders['content-security-policy'];
+    // Remove headers de segurança
+    const resHeaders = respOrig ? { ...Object.fromEntries(respOrig.headers.entries()) } : {};
+    delete resHeaders['x-frame-options'];
+    delete resHeaders['content-security-policy'];
 
-      // Reescreve links
-      html = rewriteLinks(html);
+    // Reescreve links
+    if (html) html = rewriteLinks(html);
 
-      // Troca título
-      html = html.replace(/<title>[^<]*<\/title>/, '<title>Boraflix Filmes</title>');
+    // Troca título
+    if (html) html = html.replace(/<title>[^<]*<\/title>/, '<title>Boraflix Filmes</title>');
 
-      // Injeta banner
-      if (html.includes('</body>')) {
-        html = html.replace('</body>', `
+    // Injeta banner
+    if (html && html.includes('</body>')) {
+      html = html.replace('</body>', `
 <div id="custom-footer">
   <a href="https://s.shopee.com.br/4VSYYPCHx2" target="_blank">
     <img src="https://i.ibb.co/XfhTxV5g/Design-sem-nome-1.png"
@@ -76,22 +96,18 @@ module.exports = async (req, res) => {
   body { padding-bottom: 120px !important; }
 </style>
 </body>`);
-      }
-
-      return res.writeHead(200, {
-        ...resHeaders,
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'text/html'
-      }), res.end(html);
     }
 
-    // Outros tipos de arquivo
-    res.writeHead(respOrig.status, { 'Content-Type': contentType, 'Access-Control-Allow-Origin': '*' });
-    res.end(data);
+    res.writeHead(200, {
+      ...resHeaders,
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'text/html'
+    });
+    res.end(html);
 
   } catch (err) {
-    console.error('Erro geral proxy otimizado:', err);
+    console.error('Erro geral proxy híbrido:', err);
     res.statusCode = 500;
-    res.end('Erro interno do proxy otimizado.');
+    res.end('Erro interno do proxy híbrido.');
   }
 };
