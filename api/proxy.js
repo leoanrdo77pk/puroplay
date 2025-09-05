@@ -84,18 +84,35 @@ module.exports = async (req, res) => {
 
       // ================= SAFE ADBLOCK =================
       try {
-        // Remove iframes de anúncios conhecidos
         html = html.replace(/<iframe[^>]+src=["']https?:\/\/.*?(ads|pop).*?["'][^>]*><\/iframe>/gi, '');
-        // Remove scripts externos de anúncios
         html = html.replace(/<script[^>]+src=["']https?:\/\/.*?(ads|pop).*?["'][^>]*><\/script>/gi, '');
-        // Remove divs com classes de popup ou modal, mas sem capturar conteúdo interno longo
         html = html.replace(/<div[^>]+class=["'][^"']*(popup|modal|ads)[^"']*["'][^>]*>/gi, '');
       } catch(e) {
         console.error("Erro ao bloquear popups:", e);
       }
       // =================================================
 
-      // Injetar banner
+      // ================= CUSTOM HEADER =================
+      if (html.includes('<body')) {
+        html = html.replace('<body', `<body>
+<header id="custom-header">
+  <div style="background:#111;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-size:24px;font-weight:bold;">StartFlix Proxy</div>
+    <nav>
+      <a href="/" style="color:#fff;margin:0 10px;text-decoration:none;">Home</a>
+      <a href="/series" style="color:#fff;margin:0 10px;text-decoration:none;">Séries</a>
+      <a href="/filmes" style="color:#fff;margin:0 10px;text-decoration:none;">Filmes</a>
+    </nav>
+  </div>
+</header>
+<style>
+  body { padding-top: 60px !important; } /* espaço para o header fixo */
+</style>
+`);
+      }
+      // =================================================
+
+      // Injetar banner no final
       if (html.includes('</body>')) {
         html = html.replace('</body>', `
 <div id="custom-footer">
