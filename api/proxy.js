@@ -19,7 +19,6 @@ module.exports = async (req, res) => {
       'Host': DOMINIO
     };
 
-    // Busca a URL no Boraflix e segue redirecionamentos
     const response = await fetch(url, { headers: reqHeaders, redirect: 'follow' });
     const contentType = response.headers.get('content-type') || '';
 
@@ -30,13 +29,27 @@ module.exports = async (req, res) => {
     if (contentType.includes('text/html')) {
       let html = data.toString('utf-8');
 
-      // Remove headers de segurança do Boraflix (CSP, X-Frame-Options)
+      // Remove headers de segurança
       const headers = { ...Object.fromEntries(response.headers.entries()) };
       delete headers['x-frame-options'];
       delete headers['content-security-policy'];
 
-      // Reescreve todos os links absolutos do Boraflix para relativos
-      html = html.replace(new RegExp(`https?:\/\/${DOMINIO}`, 'g'), '');
+      // Reescreve todos os links do Boraflix
+      const linkRegex = new RegExp(`https?:\/\/${DOMINIO}`, 'g');
+      html = html.replace(linkRegex, '');
+
+      // Reescreve links dentro de href, src e action
+      html = html
+        .replace(/(href|src|action)=["']\/?([^"'>]+)["']/g, (match, p1, p2) => {
+          if (p2.startsWith('http') || p2.startsWith('//')) return match;
+          return `${p1}="/${p2}"`;
+        });
+
+      // Reescreve URLs dentro de scripts simples
+      html = html.replace(/(https?:\/\/www\.boraflix\.com\/[^\s"']+)/g, (match) => {
+        const pathMatch = match.replace(`https://www.boraflix.com`, '');
+        return pathMatch.startsWith('/') ? pathMatch : '/' + pathMatch;
+      });
 
       // Troca título
       html = html.replace(/<title>[^<]*<\/title>/, '<title>Boraflix Filmes</title>');
@@ -66,7 +79,7 @@ module.exports = async (req, res) => {
       return res.end(html);
     }
 
-    // Outros tipos de arquivo (CSS, JS, imagens, vídeos)
+    // Outros arquivos (CSS, JS, imagens, vídeos)
     res.writeHead(response.status, { 'Content-Type': contentType, 'Access-Control-Allow-Origin': '*' });
     res.end(data);
 
