@@ -3,14 +3,40 @@ const fetch = global.fetch || require('node-fetch');
 
 const DOMINIO = 'www.boraflix.com';
 
+async function fetchContent(url, headers) {
+  const res = await fetch(url, { headers, redirect: 'follow' });
+  const contentType = res.headers.get('content-type') || '';
+  const buffer = await res.arrayBuffer();
+  return { data: Buffer.from(buffer), contentType, res };
+}
+
+function rewriteLinks(html) {
+  // Reescreve links absolutos
+  html = html.replace(new RegExp(`https?:\/\/${DOMINIO}`, 'g'), '');
+
+  // Reescreve href, src, action
+  html = html.replace(/(href|src|action)=["']\/?([^"'>]+)["']/g, (match, p1, p2) => {
+    if (p2.startsWith('http') || p2.startsWith('//')) return match;
+    return `${p1}="/${p2}"`;
+  });
+
+  // Reescreve URLs dentro de scripts simples
+  html = html.replace(/(https?:\/\/www\.boraflix\.com\/[^\s"']+)/g, (match) => {
+    const pathMatch = match.replace(`https://www.boraflix.com`, '');
+    return pathMatch.startsWith('/') ? pathMatch : '/' + pathMatch;
+  });
+
+  return html;
+}
+
 module.exports = async (req, res) => {
   try {
     const path = req.url === '/' ? '' : req.url;
     const url = `https://${DOMINIO}${path}`;
     console.log('Proxy buscando:', url);
 
-    const reqHeaders = {
-      'User-Agent': req.headers['user-agent'] || 
+    const headers = {
+      'User-Agent': req.headers['user-agent'] ||
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
       'Referer': `https://${DOMINIO}/`,
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
@@ -19,42 +45,23 @@ module.exports = async (req, res) => {
       'Host': DOMINIO
     };
 
-    const response = await fetch(url, { headers: reqHeaders, redirect: 'follow' });
-    const contentType = response.headers.get('content-type') || '';
+    const { data, contentType, res: respOrig } = await fetchContent(url, headers);
 
-    const buffer = await response.arrayBuffer();
-    const data = Buffer.from(buffer);
-
-    // HTML
     if (contentType.includes('text/html')) {
       let html = data.toString('utf-8');
 
       // Remove headers de segurança
-      const headers = { ...Object.fromEntries(response.headers.entries()) };
-      delete headers['x-frame-options'];
-      delete headers['content-security-policy'];
+      const resHeaders = { ...Object.fromEntries(respOrig.headers.entries()) };
+      delete resHeaders['x-frame-options'];
+      delete resHeaders['content-security-policy'];
 
-      // Reescreve todos os links do Boraflix
-      const linkRegex = new RegExp(`https?:\/\/${DOMINIO}`, 'g');
-      html = html.replace(linkRegex, '');
-
-      // Reescreve links dentro de href, src e action
-      html = html
-        .replace(/(href|src|action)=["']\/?([^"'>]+)["']/g, (match, p1, p2) => {
-          if (p2.startsWith('http') || p2.startsWith('//')) return match;
-          return `${p1}="/${p2}"`;
-        });
-
-      // Reescreve URLs dentro de scripts simples
-      html = html.replace(/(https?:\/\/www\.boraflix\.com\/[^\s"']+)/g, (match) => {
-        const pathMatch = match.replace(`https://www.boraflix.com`, '');
-        return pathMatch.startsWith('/') ? pathMatch : '/' + pathMatch;
-      });
+      // Reescreve links
+      html = rewriteLinks(html);
 
       // Troca título
       html = html.replace(/<title>[^<]*<\/title>/, '<title>Boraflix Filmes</title>');
 
-      // Injeta banner no final
+      // Injeta banner
       if (html.includes('</body>')) {
         html = html.replace('</body>', `
 <div id="custom-footer">
@@ -71,21 +78,20 @@ module.exports = async (req, res) => {
 </body>`);
       }
 
-      res.writeHead(200, {
-        ...headers,
+      return res.writeHead(200, {
+        ...resHeaders,
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'text/html'
-      });
-      return res.end(html);
+      }), res.end(html);
     }
 
-    // Outros arquivos (CSS, JS, imagens, vídeos)
-    res.writeHead(response.status, { 'Content-Type': contentType, 'Access-Control-Allow-Origin': '*' });
+    // Outros tipos de arquivo
+    res.writeHead(respOrig.status, { 'Content-Type': contentType, 'Access-Control-Allow-Origin': '*' });
     res.end(data);
 
   } catch (err) {
-    console.error('Erro geral proxy:', err);
+    console.error('Erro geral proxy otimizado:', err);
     res.statusCode = 500;
-    res.end('Erro interno do proxy.');
+    res.end('Erro interno do proxy otimizado.');
   }
 };
