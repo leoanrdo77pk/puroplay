@@ -109,8 +109,8 @@ module.exports = async (req, res) => {
     <h1 style="font-size:64px; font-weight:bold; margin:0;">Puro Play</h1>
     <nav style="margin-top:20px;">
       <a href="/" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Home</a>
-      <a href="/series" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Séries</a>
-      <a href="/filmes" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Filmes</a>
+      <a href="https://puroplay.vercel.app/series/" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Séries</a>
+      <a href="https://puroplay.vercel.app/filmes/" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Filmes</a>
     </nav>
   </div>
 </header>
