@@ -76,21 +76,20 @@ module.exports = async (req, res) => {
       html = html
         .replace(/src=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'src="/$1"')
         .replace(/href=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'href="/$1"')
-        .replace(/action=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'action="/$1"');
-
-      html = html
+        .replace(/action=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'action="/$1"')
         .replace(/<title>[^<]*<\/title>/, '<title>Puro Play</title>')
         .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-      // ================= SAFE ADBLOCK =================
+      // ================= AGRESSIVO ADBLOCK =================
       try {
-        html = html.replace(/<iframe[^>]+src=["']https?:\/\/.*?(ads|pop).*?["'][^>]*><\/iframe>/gi, '');
-        html = html.replace(/<script[^>]+src=["']https?:\/\/.*?(ads|pop).*?["'][^>]*><\/script>/gi, '');
-        html = html.replace(/<div[^>]+class=["'][^"']*(popup|modal|ads)[^"']*["'][^>]*>/gi, '');
+        // Remove iframes suspeitos, popups e anúncios
+        html = html.replace(/<iframe[^>]+src=["']https?:\/\/.*?(ads|pop|banner).*?["'][^>]*><\/iframe>/gi, '');
+        html = html.replace(/<script[^>]+src=["']https?:\/\/.*?(ads|pop|banner).*?["'][^>]*><\/script>/gi, '');
+        html = html.replace(/<div[^>]+class=["'][^"']*(popup|modal|ads|banner)[^"']*["'][^>]*>.*?<\/div>/gi, '');
       } catch(e) {
-        console.error("Erro ao bloquear popups:", e);
+        console.error("Erro ao bloquear anúncios:", e);
       }
-      // =================================================
+      // ======================================================
 
       // ================= CUSTOM HEADER =================
       if (html.includes('<body')) {
@@ -109,8 +108,8 @@ module.exports = async (req, res) => {
     <h1 style="font-size:64px; font-weight:bold; margin:0;">Puro Play</h1>
     <nav style="margin-top:20px;">
       <a href="/" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Home</a>
-      <a href="https://puroplay.vercel.app/series/" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Séries</a>
-      <a href="https://puroplay.vercel.app/filmes/" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Filmes</a>
+      <a href="/series" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Séries</a>
+      <a href="/filmes" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Filmes</a>
     </nav>
   </div>
 </header>
@@ -120,23 +119,6 @@ module.exports = async (req, res) => {
 `);
       }
       // =================================================
-
-      // Injetar banner no final
-      if (html.includes('</body>')) {
-        html = html.replace('</body>', `
-<div id="custom-footer">
-  <a href="https://s.shopee.com.br/4VSYYPCHx2" target="_blank">
-    <img src="https://i.ibb.co/XfhTxV5g/Design-sem-nome-1.png"
-         style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;"
-         alt="Banner" />
-  </a>
-</div>
-<style>
-  #custom-footer { position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; z-index: 9999; }
-  body { padding-bottom: 120px !important; }
-</style>
-</body>`);
-      }
 
       res.writeHead(200, {
         ...headers,
