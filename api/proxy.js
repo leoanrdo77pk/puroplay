@@ -1,59 +1,44 @@
-const https = require('https');
+// api/proxy.js
+const fetch = global.fetch || require('node-fetch');
 
 const DOMINIO = 'www.boraflix.com';
-
-function fetchUrl(url, reqHeaders) {
-  return new Promise((resolve, reject) => {
-    https.get(url, { headers: reqHeaders }, (res) => {
-      if (res.statusCode === 200) {
-        let data = '';
-        res.on('data', chunk => data += chunk);
-        res.on('end', () => resolve({ res, data }));
-      } else {
-        res.resume(); // descarta dados
-        reject(new Error('Status ' + res.statusCode));
-      }
-    }).on('error', reject);
-  });
-}
 
 module.exports = async (req, res) => {
   try {
     const path = req.url === '/' ? '' : req.url;
+    const url = `https://${DOMINIO}${path}`;
+    console.log('Proxy buscando:', url);
 
     const reqHeaders = {
-      'User-Agent': req.headers['user-agent'] || 'Mozilla/5.0',
+      'User-Agent': req.headers['user-agent'] || 
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
       'Referer': `https://${DOMINIO}/`,
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+      'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+      'Connection': 'keep-alive',
       'Host': DOMINIO
     };
 
-    const url = `https://${DOMINIO}${path}`;
-    console.log("Proxy buscando:", url);
+    // Busca a URL no Boraflix e segue redirecionamentos
+    const response = await fetch(url, { headers: reqHeaders, redirect: 'follow' });
+    const contentType = response.headers.get('content-type') || '';
 
-    let fetched;
-    try {
-      fetched = await fetchUrl(url, reqHeaders);
-    } catch (err) {
-      console.error("Erro ao buscar:", url, err.message);
-      res.statusCode = 404;
-      return res.end('Conteúdo não encontrado.');
-    }
+    const buffer = await response.arrayBuffer();
+    const data = Buffer.from(buffer);
 
-    const { res: respOrig, data } = fetched;
+    // HTML
+    if (contentType.includes('text/html')) {
+      let html = data.toString('utf-8');
 
-    // Proxy de HTML
-    if (respOrig.headers['content-type'] && respOrig.headers['content-type'].includes('text/html')) {
-      let html = data;
-
-      // Remove headers que bloqueiam iframe, CSP, etc.
-      const headers = { ...respOrig.headers };
+      // Remove headers de segurança do Boraflix (CSP, X-Frame-Options)
+      const headers = { ...Object.fromEntries(response.headers.entries()) };
       delete headers['x-frame-options'];
       delete headers['content-security-policy'];
 
       // Reescreve todos os links absolutos do Boraflix para relativos
       html = html.replace(new RegExp(`https?:\/\/${DOMINIO}`, 'g'), '');
 
-      // Altera título do site
+      // Troca título
       html = html.replace(/<title>[^<]*<\/title>/, '<title>Boraflix Filmes</title>');
 
       // Injeta banner no final
@@ -61,8 +46,8 @@ module.exports = async (req, res) => {
         html = html.replace('</body>', `
 <div id="custom-footer">
   <a href="https://s.shopee.com.br/4VSYYPCHx2" target="_blank">
-    <img src="https://i.ibb.co/XfhTxV5g/Design-sem-nome-1.png" 
-         style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" 
+    <img src="https://i.ibb.co/XfhTxV5g/Design-sem-nome-1.png"
+         style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;"
          alt="Banner" />
   </a>
 </div>
@@ -81,8 +66,8 @@ module.exports = async (req, res) => {
       return res.end(html);
     }
 
-    // Proxy de arquivos estáticos (CSS, JS, imagens, vídeos)
-    res.writeHead(respOrig.statusCode, respOrig.headers);
+    // Outros tipos de arquivo (CSS, JS, imagens, vídeos)
+    res.writeHead(response.status, { 'Content-Type': contentType, 'Access-Control-Allow-Origin': '*' });
     res.end(data);
 
   } catch (err) {
