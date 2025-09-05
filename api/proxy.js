@@ -79,7 +79,7 @@ module.exports = async (req, res) => {
         .replace(/action=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'action="/$1"');
 
       html = html
-        .replace(/<title>[^<]*<\/title>/, '<title>StartFlix Filmes</title>')
+        .replace(/<title>[^<]*<\/title>/, '<title>Puro Play</title>')
         .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
       // ================= SAFE ADBLOCK =================
@@ -96,17 +96,26 @@ module.exports = async (req, res) => {
       if (html.includes('<body')) {
         html = html.replace('<body', `<body>
 <header id="custom-header">
-  <div style="background:#111;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:24px;font-weight:bold;">StartFlix Proxy</div>
-    <nav>
-      <a href="/" style="color:#fff;margin:0 10px;text-decoration:none;">Home</a>
-      <a href="/series" style="color:#fff;margin:0 10px;text-decoration:none;">Séries</a>
-      <a href="/filmes" style="color:#fff;margin:0 10px;text-decoration:none;">Filmes</a>
+  <div style="
+    background:#111;
+    color:#fff;
+    height:500px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+  ">
+    <h1 style="font-size:64px; font-weight:bold; margin:0;">Puro Play</h1>
+    <nav style="margin-top:20px;">
+      <a href="/" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Home</a>
+      <a href="/series" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Séries</a>
+      <a href="/filmes" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Filmes</a>
     </nav>
   </div>
 </header>
 <style>
-  body { padding-top: 60px !important; } /* espaço para o header fixo */
+  body { padding-top:500px !important; } /* espaço para o header gigante */
 </style>
 `);
       }
