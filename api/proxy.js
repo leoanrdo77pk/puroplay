@@ -2,8 +2,8 @@
 const https = require('https');
 
 const DOMINIOS = [
-  'www9.redecanais.in',
-  // Se houver outros mirrors, adicione aqui
+  'startflix.vip',
+  // Caso existam mirrors, adicione aqui
 ];
 
 function fetchUrl(url, reqHeaders) {
@@ -33,14 +33,13 @@ module.exports = async (req, res) => {
     let fetched = null;
     let dominioUsado = null;
 
-    // Tenta todos os domínios
     for (const dominio of DOMINIOS) {
       try {
         const url = `https://${dominio}${path}`;
         fetched = await fetchUrl(url, reqHeaders);
         dominioUsado = dominio;
         break;
-      } catch (_) { /* continua para próximo domínio */ }
+      } catch (_) { /* tenta próximo domínio */ }
     }
 
     if (!fetched) {
@@ -71,18 +70,16 @@ module.exports = async (req, res) => {
       delete headers['x-frame-options'];
       delete headers['content-security-policy'];
 
-      // Reescreve links
       const dominioRegex = new RegExp(`https?:\/\/(?:${DOMINIOS.join('|')})\/`, 'g');
       html = html.replace(dominioRegex, '/');
 
       html = html
-        .replace(/src=["']https?:\/\/(?:www9\.redecanais[^\/]+)\/([^"']+)["']/g, 'src="/$1"')
-        .replace(/href=["']https?:\/\/(?:www9\.redecanais[^\/]+)\/([^"']+)["']/g, 'href="/$1"')
-        .replace(/action=["']https?:\/\/(?:www9\.redecanais[^\/]+)\/([^"']+)["']/g, 'action="/$1"');
+        .replace(/src=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'src="/$1"')
+        .replace(/href=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'href="/$1"')
+        .replace(/action=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'action="/$1"');
 
-      // Trocar título e remover ícone
       html = html
-        .replace(/<title>[^<]*<\/title>/, '<title>RedeCanais Filmes</title>')
+        .replace(/<title>[^<]*<\/title>/, '<title>StartFlix Filmes</title>')
         .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
       // Injetar banner
