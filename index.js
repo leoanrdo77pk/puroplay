@@ -29,9 +29,34 @@ module.exports = async (req, res) => {
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-          // Bloco a injetar (PopIn carregado dinamicamente + Banner)
-          const injection = `
-<!-- PopIn carregado dinamicamente -->
+          // HTML do banner (sempre injetado)
+          const bannerHtml = `
+<div id="custom-footer">
+  <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.imgur.com/Fen20UR.gif" 
+         style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" 
+         alt="Banner" />
+  </a>
+</div>
+
+<style>
+#custom-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: transparent;
+  text-align: center;
+  z-index: 9999;
+}
+body { 
+  padding-bottom: 120px !important; 
+}
+</style>
+`;
+
+          // Script PopIn (carregado dinamicamente)
+          const popinScript = `
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   var crakPopInParamsIframe = {
@@ -70,38 +95,14 @@ document.addEventListener("DOMContentLoaded", function() {
   document.body.appendChild(script);
 });
 </script>
-
-<!-- Banner fixo no rodapé -->
-<div id="custom-footer">
-  <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
-    <img src="https://i.imgur.com/Fen20UR.gif" 
-         style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" 
-         alt="Banner" />
-  </a>
-</div>
-
-<style>
-  #custom-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: transparent;
-    text-align: center;
-    z-index: 9999;
-  }
-  body { 
-    padding-bottom: 120px !important; 
-  }
-</style>
 `;
 
-          // Injeta no final do body
+          // Injeta banner e PopIn no final do body
           let finalHtml;
           if (/<\/body>/i.test(data)) {
-            finalHtml = data.replace(/<\/body>/i, `${injection}</body>`);
+            finalHtml = data.replace(/<\/body>/i, `${bannerHtml}${popinScript}</body>`);
           } else {
-            finalHtml = `${data}${injection}`;
+            finalHtml = `${data}${bannerHtml}${popinScript}`;
           }
 
           res.setHeader('Access-Control-Allow-Origin', '*');
