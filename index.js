@@ -64,41 +64,7 @@ module.exports = async (req, res) => {
       .replace(/<title>[^<]*<\/title>/i, '<title>Futebol ao vivo</title>')
       .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-    // String de injeção com script PopIn corrigido (não aparece mais na tela)
-    const injection = `
-<script>
-  var crakPopInParamsIframe = {};
-  crakPopInParamsIframe.url = 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial';
-  crakPopInParamsIframe.decryptUrl = false;
-  crakPopInParamsIframe.contentUrl = 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial';
-  crakPopInParamsIframe.decryptContentUrl = false;
-  crakPopInParamsIframe.contentType = 'iframe';
-  crakPopInParamsIframe.width = '85%';
-  crakPopInParamsIframe.height = '85%';
-  crakPopInParamsIframe.timeout = false;
-  crakPopInParamsIframe.delayClose = 0;
-  crakPopInParamsIframe.clickStart = false;
-  crakPopInParamsIframe.closeIntent = false;
-  crakPopInParamsIframe.postitialBehavior = true;
-  crakPopInParamsIframe.closeButtonColor = '#000';
-  crakPopInParamsIframe.closeCrossColor = '#fff';
-  crakPopInParamsIframe.shadow = true;
-  crakPopInParamsIframe.shadowColor = '#000';
-  crakPopInParamsIframe.shadowOpacity = '.5';
-  crakPopInParamsIframe.shadeColor = '#111';
-  crakPopInParamsIframe.shadeOpacity = '0';
-  crakPopInParamsIframe.border = '1px';
-  crakPopInParamsIframe.borderColor = '#000';
-  crakPopInParamsIframe.borderRadius = '0px';
-  crakPopInParamsIframe.leadOut = true;
-  crakPopInParamsIframe.animation = 'slide';
-  crakPopInParamsIframe.direction = 'up';
-  crakPopInParamsIframe.verticalPosition = 'center';
-  crakPopInParamsIframe.horizontalPosition = 'center';
-  crakPopInParamsIframe.expireDays = 0.01;
-</script>
-<script src="https://crxcr1.com/popin/latest/popin-min.js"></script>
-
+ 
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
     <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
