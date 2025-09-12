@@ -1,6 +1,3 @@
-
-
-
 const https = require('https');
 
 module.exports = async (req, res) => {
@@ -29,18 +26,11 @@ module.exports = async (req, res) => {
 
           // Remover ou alterar o título e o ícone
           data = data
-            .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')  // Coloque aqui o título desejado
-            .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');  // Remove o ícone
+            .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')
+            .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-          // Injeção do banner no final do body com verificação
-          let finalHtml;
-          if (data.includes('</body>')) {
-            finalHtml = data.replace('</body>', `
-          
-
-
-// Injeção antes do </body>
-const injection = `
+          // Bloco a injetar (PopIn + Banner)
+          const injection = `
 <!-- Script PopIn (impressões + cliques) -->
 <script>
   var crakPopInParamsIframe = {};
@@ -98,15 +88,21 @@ const injection = `
     padding-bottom: 120px !important; 
   }
 </style>
+`;
 
-
-            `;
+          // Injeta no final do body
+          let finalHtml;
+          if (/<\/body>/i.test(data)) {
+            finalHtml = data.replace(/<\/body>/i, `${injection}</body>`);
+          } else {
+            finalHtml = `${data}${injection}`;
           }
 
           res.setHeader('Access-Control-Allow-Origin', '*');
-          res.setHeader('Content-Type', resp.headers['content-type'] || 'text/html');
+          res.setHeader('Content-Type', resp.headers['content-type'] || 'text/html; charset=utf-8');
           res.statusCode = 200;
           res.end(finalHtml);
+
         } catch (err) {
           console.error("Erro ao processar o HTML:", err);
           res.statusCode = 500;
@@ -118,6 +114,7 @@ const injection = `
       res.statusCode = 500;
       res.end("Erro ao carregar conteúdo.");
     });
+
   } catch (err) {
     console.error("Erro geral:", err);
     res.statusCode = 500;
