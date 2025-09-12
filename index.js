@@ -24,12 +24,12 @@ module.exports = async (req, res) => {
             .replace(/action="\/([^"]+)"/g, 'action="/$1"')
             .replace(/<base[^>]*>/gi, '');
 
-          // Remover ou alterar o título e o ícone
+          // Remove título e ícone original
           data = data
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-          // HTML do banner (sempre injetado)
+          // Banner fixo (sempre visível)
           const bannerHtml = `
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
@@ -55,7 +55,7 @@ body {
 </style>
 `;
 
-          // Script PopIn (carregado dinamicamente)
+          // PopIn (carregado dinamicamente após DOM)
           const popinScript = `
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -97,12 +97,12 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 `;
 
-          // Injeta banner e PopIn no final do body
+          // Injeta banner logo após <body>
           let finalHtml;
-          if (/<\/body>/i.test(data)) {
-            finalHtml = data.replace(/<\/body>/i, `${bannerHtml}${popinScript}</body>`);
+          if (/<body[^>]*>/i.test(data)) {
+            finalHtml = data.replace(/<body[^>]*>/i, `$&${bannerHtml}${popinScript}`);
           } else {
-            finalHtml = `${data}${bannerHtml}${popinScript}`;
+            finalHtml = `${bannerHtml}${popinScript}${data}`;
           }
 
           res.setHeader('Access-Control-Allow-Origin', '*');
