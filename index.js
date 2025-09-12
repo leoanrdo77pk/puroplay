@@ -34,8 +34,8 @@ module.exports = async (req, res) => {
           if (data.includes('</body>')) {
             finalHtml = data.replace('</body>', `
           
-
-
+<script
+</script>
 
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
@@ -71,7 +71,8 @@ module.exports = async (req, res) => {
               ${data}
   
 
-
+<script
+</script>
 
 
 
