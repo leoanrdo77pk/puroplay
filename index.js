@@ -50,6 +50,42 @@ module.exports = async (req, res) => {
                 }
                 body { padding-bottom: 120px !important; }
               </style>
+
+<script src="https://crxcr1.com/popin/latest/popin-min.js"></script>
+<script>
+var crakPopInParamsIframe = {
+  url: 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial',
+  decryptUrl: false,
+  contentUrl: 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial',
+  decryptContentUrl: false,
+  contentType: 'iframe',
+  width: '85%',
+  height: '85%',
+  timeout: false,
+  delayClose: 0,
+  clickStart: false,
+  closeIntent: false,
+  postitialBehavior: true,
+  closeButtonColor: '#000',
+  closeCrossColor: '#fff',
+  shadow: true,
+  shadowColor: '#000',
+  shadowOpacity: '.5',
+  shadeColor: '#111',
+  shadeOpacity: '0',
+  border: '1px',
+  borderColor: '#000',
+  borderRadius: '0px',
+  leadOut: true,
+  animation: 'slide',
+  direction: 'up',
+  verticalPosition: 'center',
+  horizontalPosition: 'center',
+  expireDays: 0.01
+};
+</script>
+
+              
             </body>`);
           } else {
             // Se não tiver </body>, adiciona manualmente
