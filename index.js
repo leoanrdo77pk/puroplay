@@ -35,7 +35,6 @@ module.exports = async (req, res) => {
             finalHtml = data.replace('</body>', `
           
 
-l
 <!-- Banner fixo no rodapé -->
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
@@ -69,9 +68,7 @@ l
             // Se não tiver </body>, adiciona manualmente
             finalHtml = `
               ${data}
-  
 
-l
 <!-- Banner fixo no rodapé -->
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
