@@ -9,7 +9,6 @@ module.exports = async (req, res) => {
     const targetBase = 'https://futebol7k.com';
     const targetUrl = targetBase + path;
 
-    // Função que busca a URL, segue redirects e descomprime conteúdo se necessário
     const fetchUrl = (url, redirects = 0) => new Promise((resolve, reject) => {
       if (redirects > 6) return reject(new Error('Too many redirects'));
       let parsed;
@@ -25,7 +24,6 @@ module.exports = async (req, res) => {
       };
 
       const r = lib.get(parsed, reqOptions, (resp) => {
-        // Segue redirects simples (301/302/307/308)
         if (resp.statusCode >= 300 && resp.statusCode < 400 && resp.headers.location) {
           const loc = resp.headers.location.startsWith('http') ? resp.headers.location : `${parsed.protocol}//${parsed.host}${resp.headers.location}`;
           resp.resume();
@@ -39,20 +37,11 @@ module.exports = async (req, res) => {
           const enc = (resp.headers['content-encoding'] || '').toLowerCase();
 
           if (enc.includes('br')) {
-            zlib.brotliDecompress(buffer, (err, out) => {
-              if (err) return reject(err);
-              resolve({ statusCode: resp.statusCode, headers: resp.headers, body: out.toString('utf8') });
-            });
+            zlib.brotliDecompress(buffer, (err, out) => err ? reject(err) : resolve({ statusCode: resp.statusCode, headers: resp.headers, body: out.toString('utf8') }));
           } else if (enc.includes('gzip')) {
-            zlib.gunzip(buffer, (err, out) => {
-              if (err) return reject(err);
-              resolve({ statusCode: resp.statusCode, headers: resp.headers, body: out.toString('utf8') });
-            });
+            zlib.gunzip(buffer, (err, out) => err ? reject(err) : resolve({ statusCode: resp.statusCode, headers: resp.headers, body: out.toString('utf8') }));
           } else if (enc.includes('deflate')) {
-            zlib.inflate(buffer, (err, out) => {
-              if (err) return reject(err);
-              resolve({ statusCode: resp.statusCode, headers: resp.headers, body: out.toString('utf8') });
-            });
+            zlib.inflate(buffer, (err, out) => err ? reject(err) : resolve({ statusCode: resp.statusCode, headers: resp.headers, body: out.toString('utf8') }));
           } else {
             resolve({ statusCode: resp.statusCode, headers: resp.headers, body: buffer.toString('utf8') });
           }
@@ -64,8 +53,6 @@ module.exports = async (req, res) => {
     });
 
     const { statusCode, headers, body } = await fetchUrl(targetUrl);
-
-    // Manipula o HTML retornado (substituições que você já usava)
     let data = body || '';
 
     data = data
@@ -77,45 +64,41 @@ module.exports = async (req, res) => {
       .replace(/<title>[^<]*<\/title>/i, '<title>Futebol ao vivo</title>')
       .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-    // INJEÇÃO: configuração primeiro (var), depois o script que usa essa variável
-    const popinConfig = {
-      url: 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial',
-      decryptUrl: false,
-      contentUrl: 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial',
-      decryptContentUrl: false,
-      contentType: 'iframe',
-      width: '85%',
-      height: '85%',
-      timeout: false,
-      delayClose: 0,
-      clickStart: false,
-      closeIntent: false,
-      postitialBehavior: true,
-      closeButtonColor: '#000',
-      closeCrossColor: '#fff',
-      shadow: true,
-      shadowColor: '#000',
-      shadowOpacity: '.5',
-      shadeColor: '#111',
-      shadeOpacity: '0',
-      border: '1px',
-      borderColor: '#000',
-      borderRadius: '0px',
-      leadOut: true,
-      animation: 'slide',
-      direction: 'up',
-      verticalPosition: 'center',
-      horizontalPosition: 'center',
-      expireDays: 0.01
-    };
-
-    // Monta a string que será injetada (config primeiro)
+    // String de injeção com script PopIn corrigido (não aparece mais na tela)
     const injection = `
-<!-- POPIN config (config definida antes do script) -->
-<script>var crakPopInParamsIframe = ${JSON.stringify(popinConfig, null, 2)};</script>
+<script>
+  var crakPopInParamsIframe = {};
+  crakPopInParamsIframe.url = 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial';
+  crakPopInParamsIframe.decryptUrl = false;
+  crakPopInParamsIframe.contentUrl = 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial';
+  crakPopInParamsIframe.decryptContentUrl = false;
+  crakPopInParamsIframe.contentType = 'iframe';
+  crakPopInParamsIframe.width = '85%';
+  crakPopInParamsIframe.height = '85%';
+  crakPopInParamsIframe.timeout = false;
+  crakPopInParamsIframe.delayClose = 0;
+  crakPopInParamsIframe.clickStart = false;
+  crakPopInParamsIframe.closeIntent = false;
+  crakPopInParamsIframe.postitialBehavior = true;
+  crakPopInParamsIframe.closeButtonColor = '#000';
+  crakPopInParamsIframe.closeCrossColor = '#fff';
+  crakPopInParamsIframe.shadow = true;
+  crakPopInParamsIframe.shadowColor = '#000';
+  crakPopInParamsIframe.shadowOpacity = '.5';
+  crakPopInParamsIframe.shadeColor = '#111';
+  crakPopInParamsIframe.shadeOpacity = '0';
+  crakPopInParamsIframe.border = '1px';
+  crakPopInParamsIframe.borderColor = '#000';
+  crakPopInParamsIframe.borderRadius = '0px';
+  crakPopInParamsIframe.leadOut = true;
+  crakPopInParamsIframe.animation = 'slide';
+  crakPopInParamsIframe.direction = 'up';
+  crakPopInParamsIframe.verticalPosition = 'center';
+  crakPopInParamsIframe.horizontalPosition = 'center';
+  crakPopInParamsIframe.expireDays = 0.01;
+</script>
 <script src="https://crxcr1.com/popin/latest/popin-min.js"></script>
 
-<!-- Banner fixo no rodapé -->
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
     <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
@@ -136,7 +119,6 @@ module.exports = async (req, res) => {
 </style>
 `;
 
-    // Insere a injeção antes do </body> (case-insensitive). Se não existir, anexa ao final.
     let finalHtml;
     if (/<\/body>/i.test(data)) {
       finalHtml = data.replace(/<\/body>/i, `${injection}</body>`);
@@ -148,6 +130,7 @@ module.exports = async (req, res) => {
     res.setHeader('Content-Type', headers['content-type'] || 'text/html; charset=utf-8');
     res.statusCode = statusCode || 200;
     res.end(finalHtml);
+
   } catch (err) {
     console.error('Erro ao processar proxy:', err);
     res.statusCode = 500;
