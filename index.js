@@ -3,12 +3,12 @@ const https = require('https');
 module.exports = async (req, res) => {
   try {
     const path = req.url === '/' ? '' : req.url;
-    const targetUrl = 'https://embedtv.digital' + path;
+    const targetUrl = 'https://futebol7k.com' + path;
 
     https.get(targetUrl, {
       headers: {
         'User-Agent': req.headers['user-agent'] || 'Mozilla/5.0',
-        'Referer': 'https://embedtv.digital/',
+        'Referer': 'https://futebol7k.com/',
       }
     }, (resp) => {
       let data = '';
@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
 
           // Reescrever todas as URLs absolutas e relativas para seu domínio
           data = data
-            .replace(/https:\/\/embedtv\.digital\//g, '/')
+            .replace(/https:\/\/futebol7k\.com\//g, '/')
             .replace(/src="https:\/\/embedtv\.digital\/([^"]+)"/g, 'src="/$1"')
             .replace(/src='https:\/\/embedtv\.digital\/([^']+)'/g, "src='/$1'")
             .replace(/href="https:\/\/embedtv\.digital\/([^"]+)"/g, 'href="/$1"')
