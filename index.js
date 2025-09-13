@@ -53,18 +53,6 @@ module.exports = async (req, res) => {
     <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
   </a>
 </div>
-<style>
-  #custom-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: transparent;
-    text-align: center;
-    z-index: 9999;
-  }
-  body { padding-bottom: 120px !important; }
-</style>
 </body>`);
           } else {
             finalHtml = `
@@ -74,19 +62,7 @@ ${data}
     <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
   </a>
 </div>
-<style>
-  #custom-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: transparent;
-    text-align: center;
-    z-index: 9999;
-  }
-  body { padding-bottom: 120px !important; }
-</style>`;
-          }
+
 
           res.writeHead(200, {
             ...headers,
