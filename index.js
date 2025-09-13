@@ -60,10 +60,19 @@ module.exports = async (req, res) => {
           // Se tiver </body>, injeta antes dela
           if (/<\/body>/i.test(data)) {
             finalHtml = data.replace(/<\/body>/i, `${banner}</body>`);
+            console.log("✅ Banner injetado antes do </body>");
           } 
-          // Se não tiver </body>, força o banner no fim
+          // Se não tiver </body>, força no final
           else {
             finalHtml = `${data}${banner}</body></html>`;
+            console.log("⚠️ Página sem </body> → Banner adicionado no fim do HTML");
+          }
+
+          // Debug extra: confirma se o banner está no HTML final
+          if (finalHtml.includes("custom-footer")) {
+            console.log("🎯 Banner realmente está no HTML final!");
+          } else {
+            console.log("🚨 Banner NÃO foi injetado!");
           }
 
           res.setHeader('Access-Control-Allow-Origin', '*');
