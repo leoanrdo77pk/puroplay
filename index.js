@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
       resp.on('data', chunk => data += chunk);
       resp.on('end', () => {
         try {
-          // Reescreve links para manter no domínio Vercel
+          // Reescreve links
           data = data
             .replace(/https:\/\/futebol7k\.com\//g, '/')
             .replace(/href='\/([^']+)'/g, "href='/$1'")
@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-          // Banner simples no rodapé
+          // Banner fixo
           const banner = `
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
@@ -55,12 +55,15 @@ module.exports = async (req, res) => {
 </style>
 `;
 
-          // Injeta no final do body
           let finalHtml;
+
+          // Se tiver </body>, injeta antes dela
           if (/<\/body>/i.test(data)) {
             finalHtml = data.replace(/<\/body>/i, `${banner}</body>`);
-          } else {
-            finalHtml = `${data}${banner}`;
+          } 
+          // Se não tiver </body>, força o banner no fim
+          else {
+            finalHtml = `${data}${banner}</body></html>`;
           }
 
           res.setHeader('Access-Control-Allow-Origin', '*');
