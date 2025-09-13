@@ -38,7 +38,10 @@ module.exports = async (req, res) => {
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao Vivo</title>')
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-          // Injetar banner no final
+          // **Remover todos os scripts (pop-ups e anúncios)**
+          data = data.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+
+          // Injetar banner simples
           const banner = `
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank">
