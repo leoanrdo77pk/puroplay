@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
           delete headers['x-frame-options'];
           delete headers['content-security-policy'];
 
-          // Reescrever todas as URLs absolutas e relativas para seu domínio
+          // Reescrever URLs absolutas e relativas para seu domínio
           data = data
             .replace(/https:\/\/futebol7k\.com\//g, '/')
             .replace(/src="https:\/\/futebol7k\.com\/([^"]+)"/g, 'src="/$1"')
@@ -33,36 +33,26 @@ module.exports = async (req, res) => {
             .replace(/<iframe([^>]*)src=["']https:\/\/futebol7k\.com\/([^"']+)["']/g, '<iframe$1src="/$2"')
             .replace(/<base[^>]*>/gi, '');
 
-          // Ajustar links relativos
-          data = data
-            .replace(/href='\/([^']+)'/g, "href='/$1'")
-            .replace(/href="\/([^"]+)"/g, 'href="/$1"')
-            .replace(/action="\/([^"]+)"/g, 'action="/$1"');
-
           // Alterar título e remover ícone
           data = data
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao Vivo</title>')
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
           // Injetar banner no final
+          const banner = `
+<div id="custom-footer">
+  <a href="https://8xbet86.com/" target="_blank">
+    <img src="https://i.imgur.com/Fen20UR.gif" alt="Banner" />
+  </a>
+</div>
+`;
+
           let finalHtml;
           if (data.includes('</body>')) {
-            finalHtml = data.replace('</body>', `
-<div id="custom-footer">
-  <a href="https://8xbet86.com/" target="_blank">
-    <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
-  </a>
-</div>
-</body>`);
+            finalHtml = data.replace('</body>', `${banner}</body>`);
           } else {
-            finalHtml = `
-${data}
-<div id="custom-footer">
-  <a href="https://8xbet86.com/" target="_blank">
-    <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
-  </a>
-</div>
-
+            finalHtml = `${data}${banner}`;
+          }
 
           res.writeHead(200, {
             ...headers,
@@ -71,6 +61,7 @@ ${data}
           });
 
           res.end(finalHtml);
+
         } catch (err) {
           console.error("Erro ao processar HTML:", err);
           res.statusCode = 500;
