@@ -1,4 +1,4 @@
-const https = require('https');
+eu quero assim como estava mas icluibdo o banner const https = require('https');
 
 module.exports = async (req, res) => {
   try {
@@ -28,52 +28,50 @@ module.exports = async (req, res) => {
           data = data
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')  // Coloque aqui o título desejado
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');  // Remove o ícone
+            
 
-          // Injetar banner no fim
-          let finalHtml = data;
+
+          // Injeção segura de banner no final do body com verificação
+          let finalHtml;
           if (data.includes('</body>')) {
-            finalHtml = data.replace('</body>', `
-              <div id="custom-footer">
-                <a href="https://8xbet86.com/" target="_blank">
-                  <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
-                </a>
-              </div>
+            finalHtml = data.replace('</body>', 
 
-              <style>
-                #custom-footer {
-                  position: fixed;
-                  bottom: 0;
-                  left: 0;
-                  width: 100%;
-                  background: transparent;
-                  text-align: center;
-                  z-index: 9999;
-                }
-                body { padding-bottom: 120px !important; }
-              </style>
-            </body>`);
+
+
+
+
+<style>
+  #custom-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: transparent;
+    text-align: center;
+    z-index: 9999;
+  }
+  body { padding-bottom: 120px !important; }
+</style>
+</body>);
           } else {
             // Se não tiver </body>, adiciona manualmente
-            finalHtml = `
-              ${data}
-              <div id="custom-footer">
-                <a href="https://8xbet86.com/" target="_blank">
-                  <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
-                </a>
-              </div>
-              <style>
-                #custom-footer {
-                  position: fixed;
-                  bottom: 0;
-                  left: 0;
-                  width: 100%;
-                  background: transparent;
-                  text-align: center;
-                  z-index: 9999;
-                }
-                body { padding-bottom: 120px !important; }
-              </style>
-            `;
+            finalHtml = 
+${data}
+<div id="custom-footer">
+
+</div>
+<style>
+  #custom-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: transparent;
+    text-align: center;
+    z-index: 9999;
+  }
+  body { padding-bottom: 120px !important; }
+</style>;
           }
 
           res.setHeader('Access-Control-Allow-Origin', '*');
