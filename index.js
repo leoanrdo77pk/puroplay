@@ -29,7 +29,8 @@ module.exports = async (req, res) => {
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-         
+          // Apenas o Banner fixo no rodapé
+          const injection = `
 <!-- Banner fixo no rodapé -->
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
