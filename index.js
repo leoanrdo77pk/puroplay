@@ -24,31 +24,13 @@ module.exports = async (req, res) => {
             .replace(/action="\/([^"]+)"/g, 'action="/$1"')
             .replace(/<base[^>]*>/gi, '');
 
-          // Remover ou alterar o título e o ícone
+          // Ajusta título e ícone
           data = data
             .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')
             .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-          // Bloco a injetar (PopIn + Banner)
-          const injection = `
-<!-- PopIn (controle de impressões/cliques) -->
-<script src="https://crxcr1.com/popin/latest/popin-min.js"></script>
-<script>
-  window.crakPopInParamsIframe = {
-    url: 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial',
-    contentUrl: 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial',
-    contentType: 'iframe',
-    width: '85%',
-    height: '85%',
-    animation: 'slide',
-    direction: 'up',
-    verticalPosition: 'center',
-    horizontalPosition: 'center',
-    expireDays: 0.01
-  };
-</script>
-
-<!-- Banner fixo no rodapé -->
+          // Banner simples no rodapé
+          const banner = `
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
     <img src="https://i.imgur.com/Fen20UR.gif" 
@@ -67,16 +49,18 @@ module.exports = async (req, res) => {
     text-align: center;
     z-index: 9999;
   }
-  body { padding-bottom: 120px !important; }
+  body { 
+    padding-bottom: 120px !important; 
+  }
 </style>
 `;
 
           // Injeta no final do body
           let finalHtml;
           if (/<\/body>/i.test(data)) {
-            finalHtml = data.replace(/<\/body>/i, `${injection}</body>`);
+            finalHtml = data.replace(/<\/body>/i, `${banner}</body>`);
           } else {
-            finalHtml = `${data}${injection}`;
+            finalHtml = `${data}${banner}`;
           }
 
           res.setHeader('Access-Control-Allow-Origin', '*');
