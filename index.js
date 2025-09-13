@@ -1,10 +1,7 @@
 const https = require('https');
 
 const DOMINIOS = [
-  'embedtv.digital',
-  'embedtv-1.icu',
-  'embedtv-2.icu',
-  'embedtv-3.icu',
+  'futebol7k.com',
 ];
 
 function fetchUrl(url, reqHeaders) {
@@ -35,7 +32,7 @@ module.exports = async (req, res) => {
     let fetched = null;
     let dominioUsado = null;
 
-    // Tenta todos os domínios até achar o conteúdo
+    // Tenta os domínios até achar o conteúdo
     for (const dominio of DOMINIOS) {
       try {
         const url = `https://${dominio}${path}`;
@@ -97,11 +94,11 @@ module.exports = async (req, res) => {
       html = html.replace(dominioRegex, '/');
 
       html = html
-        .replace(/src=["']https?:\/\/(?:embedtv[^\/]+)\/([^"']+)["']/g, 'src="/$1"')
-        .replace(/href=["']https?:\/\/(?:embedtv[^\/]+)\/([^"']+)["']/g, 'href="/$1"')
-        .replace(/action=["']https?:\/\/(?:embedtv[^\/]+)\/([^"']+)["']/g, 'action="/$1"')
-        .replace(/url\(["']?https?:\/\/(?:embedtv[^\/]+)\/(.*?)["']?\)/g, 'url("/$1")')
-        .replace(/<iframe([^>]*)src=["']https?:\/\/(?:embedtv[^\/]+)\/([^"']+)["']/g, '<iframe$1src="/$2"')
+        .replace(/src=["']https?:\/\/(?:futebol7k\.com)\/([^"']+)["']/g, 'src="/$1"')
+        .replace(/href=["']https?:\/\/(?:futebol7k\.com)\/([^"']+)["']/g, 'href="/$1"')
+        .replace(/action=["']https?:\/\/(?:futebol7k\.com)\/([^"']+)["']/g, 'action="/$1"')
+        .replace(/url\(["']?https?:\/\/(?:futebol7k\.com)\/(.*?)["']?\)/g, 'url("/$1")')
+        .replace(/<iframe([^>]*)src=["']https?:\/\/(?:futebol7k\.com)\/([^"']+)["']/g, '<iframe$1src="/$2"')
         .replace(/<base[^>]*>/gi, '');
 
       // Ajustes de links relativos
