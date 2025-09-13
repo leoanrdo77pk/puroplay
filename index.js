@@ -1,14 +1,14 @@
-o que tem de errado aqui ? const https = require('https');
+ const https = require('https');
 
 module.exports = async (req, res) => {
   try {
     const path = req.url === '/' ? '' : req.url;
-    const targetUrl = 'https://futebol7k.com/' + path;
+    const targetUrl = 'https://embedtv.digital/' + path;
 
     https.get(targetUrl, {
       headers: {
         'User-Agent': req.headers['user-agent'] || 'Mozilla/5.0',
-        'Referer': 'https://futebol7k.com/',
+        'Referer': 'https://embedtv.digital/',
       }
     }, (resp) => {
       let data = '';
@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
         try {
           // Reescreve links para manter no domínio Vercel
           data = data
-            .replace(/https:\/\/futebol7k\.com\//g, '/')
+            .replace(/https:\/\/embedtv\.digital\//g, '/')
             .replace(/href='\/([^']+)'/g, "href='/$1'")
             .replace(/href="\/([^"]+)"/g, 'href="/$1"')
             .replace(/action="\/([^"]+)"/g, 'action="/$1"')
@@ -31,16 +31,15 @@ module.exports = async (req, res) => {
             
 
 
-        // Injetar banner no fim
-      if (html.includes('</body>')) {
-        html = html.replace('</body>', `
+          // Injeção segura de banner no final do body com verificação
+          let finalHtml;
+          if (data.includes('</body>')) {
+            finalHtml = data.replace('</body>', `
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank">
     <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
   </a>
 </div>
-
-
 <style>
   #custom-footer {
     position: fixed;
@@ -53,10 +52,10 @@ module.exports = async (req, res) => {
   }
   body { padding-bottom: 120px !important; }
 </style>
-</body>);
+</body>`);
           } else {
             // Se não tiver </body>, adiciona manualmente
-            finalHtml = 
+            finalHtml = `
 ${data}
 <div id="custom-footer">
   <a href="https://8xbet86.com/" target="_blank">
@@ -74,7 +73,7 @@ ${data}
     z-index: 9999;
   }
   body { padding-bottom: 120px !important; }
-</style>;
+</style>`;
           }
 
           res.setHeader('Access-Control-Allow-Origin', '*');
