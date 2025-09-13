@@ -31,39 +31,22 @@ module.exports = async (req, res) => {
 
           // Bloco a injetar (PopIn + Banner)
           const injection = `
-<!-- Script PopIn (impressões + cliques) -->
-<script>
-  var crakPopInParamsIframe = {};
-  crakPopInParamsIframe.url = 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial';
-  crakPopInParamsIframe.decryptUrl = false;
-  crakPopInParamsIframe.contentUrl = 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial';
-  crakPopInParamsIframe.decryptContentUrl = false;
-  crakPopInParamsIframe.contentType = 'iframe';
-  crakPopInParamsIframe.width = '85%';
-  crakPopInParamsIframe.height = '85%';
-  crakPopInParamsIframe.timeout = false;
-  crakPopInParamsIframe.delayClose = 0;
-  crakPopInParamsIframe.clickStart = false;
-  crakPopInParamsIframe.closeIntent = false;
-  crakPopInParamsIframe.postitialBehavior = true;
-  crakPopInParamsIframe.closeButtonColor = '#000';
-  crakPopInParamsIframe.closeCrossColor = '#fff';
-  crakPopInParamsIframe.shadow = true;
-  crakPopInParamsIframe.shadowColor = '#000';
-  crakPopInParamsIframe.shadowOpacity = '.5';
-  crakPopInParamsIframe.shadeColor = '#111';
-  crakPopInParamsIframe.shadeOpacity = '0';
-  crakPopInParamsIframe.border = '1px';
-  crakPopInParamsIframe.borderColor = '#000';
-  crakPopInParamsIframe.borderRadius = '0px';
-  crakPopInParamsIframe.leadOut = true;
-  crakPopInParamsIframe.animation = 'slide';
-  crakPopInParamsIframe.direction = 'up';
-  crakPopInParamsIframe.verticalPosition = 'center';
-  crakPopInParamsIframe.horizontalPosition = 'center';
-  crakPopInParamsIframe.expireDays = 0.01;
-</script>
+<!-- PopIn (controle de impressões/cliques) -->
 <script src="https://crxcr1.com/popin/latest/popin-min.js"></script>
+<script>
+  window.crakPopInParamsIframe = {
+    url: 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial',
+    contentUrl: 'https://t.mbsrv2.com/273605/10163/optimized?aff_sub5=SF_006OG000004lmDN&aff_sub4=AT_0016&aff_id=1&transaction_id=postitial',
+    contentType: 'iframe',
+    width: '85%',
+    height: '85%',
+    animation: 'slide',
+    direction: 'up',
+    verticalPosition: 'center',
+    horizontalPosition: 'center',
+    expireDays: 0.01
+  };
+</script>
 
 <!-- Banner fixo no rodapé -->
 <div id="custom-footer">
@@ -84,9 +67,7 @@ module.exports = async (req, res) => {
     text-align: center;
     z-index: 9999;
   }
-  body { 
-    padding-bottom: 120px !important; 
-  }
+  body { padding-bottom: 120px !important; }
 </style>
 `;
 
