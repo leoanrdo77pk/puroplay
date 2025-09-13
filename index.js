@@ -1,4 +1,4 @@
-const https = require('https');
+o que tem de errado aqui ? const https = require('https');
 
 module.exports = async (req, res) => {
   try {
@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
       resp.on('data', chunk => data += chunk);
       resp.on('end', () => {
         try {
-          // Reescreve links
+          // Reescreve links para manter no domínio Vercel
           data = data
             .replace(/https:\/\/futebol7k\.com\//g, '/')
             .replace(/href='\/([^']+)'/g, "href='/$1'")
@@ -24,20 +24,22 @@ module.exports = async (req, res) => {
             .replace(/action="\/([^"]+)"/g, 'action="/$1"')
             .replace(/<base[^>]*>/gi, '');
 
-          // Ajusta título e ícone
+          // Remover ou alterar o título e o ícone
           data = data
-            .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')
-            .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
+            .replace(/<title>[^<]*<\/title>/, '<title>Futebol ao vivo</title>')  // Coloque aqui o título desejado
+            .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');  // Remove o ícone
+            
 
-          // Banner fixo
-          const banner = `
+
+        // Injetar banner no fim
+      if (html.includes('</body>')) {
+        html = html.replace('</body>', `
 <div id="custom-footer">
-  <a href="https://8xbet86.com/" target="_blank" rel="noopener noreferrer">
-    <img src="https://i.imgur.com/Fen20UR.gif" 
-         style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" 
-         alt="Banner" />
+  <a href="https://8xbet86.com/" target="_blank">
+    <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
   </a>
 </div>
+
 
 <style>
   #custom-footer {
@@ -49,37 +51,36 @@ module.exports = async (req, res) => {
     text-align: center;
     z-index: 9999;
   }
-  body { 
-    padding-bottom: 120px !important; 
-  }
+  body { padding-bottom: 120px !important; }
 </style>
-`;
-
-          let finalHtml;
-
-          // Se tiver </body>, injeta antes dela
-          if (/<\/body>/i.test(data)) {
-            finalHtml = data.replace(/<\/body>/i, `${banner}</body>`);
-            console.log("✅ Banner injetado antes do </body>");
-          } 
-          // Se não tiver </body>, força no final
-          else {
-            finalHtml = `${data}${banner}</body></html>`;
-            console.log("⚠️ Página sem </body> → Banner adicionado no fim do HTML");
-          }
-
-          // Debug extra: confirma se o banner está no HTML final
-          if (finalHtml.includes("custom-footer")) {
-            console.log("🎯 Banner realmente está no HTML final!");
+</body>);
           } else {
-            console.log("🚨 Banner NÃO foi injetado!");
+            // Se não tiver </body>, adiciona manualmente
+            finalHtml = 
+${data}
+<div id="custom-footer">
+  <a href="https://8xbet86.com/" target="_blank">
+    <img src="https://i.imgur.com/Fen20UR.gif" style="width:100%;max-height:100px;object-fit:contain;cursor:pointer;" alt="Banner" />
+  </a>
+</div>
+<style>
+  #custom-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: transparent;
+    text-align: center;
+    z-index: 9999;
+  }
+  body { padding-bottom: 120px !important; }
+</style>;
           }
 
           res.setHeader('Access-Control-Allow-Origin', '*');
-          res.setHeader('Content-Type', resp.headers['content-type'] || 'text/html; charset=utf-8');
+          res.setHeader('Content-Type', resp.headers['content-type'] || 'text/html');
           res.statusCode = 200;
           res.end(finalHtml);
-
         } catch (err) {
           console.error("Erro ao processar o HTML:", err);
           res.statusCode = 500;
@@ -91,7 +92,6 @@ module.exports = async (req, res) => {
       res.statusCode = 500;
       res.end("Erro ao carregar conteúdo.");
     });
-
   } catch (err) {
     console.error("Erro geral:", err);
     res.statusCode = 500;
