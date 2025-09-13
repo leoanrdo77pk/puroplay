@@ -24,13 +24,13 @@ module.exports = async (req, res) => {
           // Reescrever todas as URLs absolutas e relativas para seu domínio
           data = data
             .replace(/https:\/\/futebol7k\.com\//g, '/')
-            .replace(/src="https:\/\/embedtv\.digital\/([^"]+)"/g, 'src="/$1"')
-            .replace(/src='https:\/\/embedtv\.digital\/([^']+)'/g, "src='/$1'")
-            .replace(/href="https:\/\/embedtv\.digital\/([^"]+)"/g, 'href="/$1"')
-            .replace(/href='https:\/\/embedtv\.digital\/([^']+)'/g, "href='/$1'")
-            .replace(/action="https:\/\/embedtv\.digital\/([^"]+)"/g, 'action="/$1"')
-            .replace(/url\(["']?https:\/\/embedtv\.digital\/(.*?)["']?\)/g, 'url("/$1")')
-            .replace(/<iframe([^>]*)src=["']https:\/\/embedtv\.digital\/([^"']+)["']/g, '<iframe$1src="/$2"')
+            .replace(/src="https:\/\/futebol7k\.com\/([^"]+)"/g, 'src="/$1"')
+            .replace(/src='https:\/\/futebol7k\.com\/([^']+)'/g, "src='/$1'")
+            .replace(/href="https:\/\/futebol7k\.com\/([^"]+)"/g, 'href="/$1"')
+            .replace(/href='https:\/\/futebol7k\.com\/([^']+)'/g, "href='/$1'")
+            .replace(/action="https:\/\/futebol7k\.com\/([^"]+)"/g, 'action="/$1"')
+            .replace(/url\(["']?https:\/\/futebol7k\.com\/(.*?)["']?\)/g, 'url("/$1")')
+            .replace(/<iframe([^>]*)src=["']https:\/\/futebol7k\.com\/([^"']+)["']/g, '<iframe$1src="/$2"')
             .replace(/<base[^>]*>/gi, '');
 
           // Ajustar links relativos
