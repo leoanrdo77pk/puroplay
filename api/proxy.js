@@ -2,7 +2,7 @@
 const https = require('https');
 
 const DOMINIOS = [
-  'startflix.vip',
+  'futebol7k.com',
   // Adicione outros mirrors se necessário
 ];
 
@@ -74,9 +74,9 @@ module.exports = async (req, res) => {
       html = html.replace(dominioRegex, '/');
 
       html = html
-        .replace(/src=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'src="/$1"')
-        .replace(/href=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'href="/$1"')
-        .replace(/action=["']https?:\/\/(?:startflix[^\/]+)\/([^"']+)["']/g, 'action="/$1"')
+        .replace(/src=["']https?:\/\/(?:futebol7k[^\/]+)\/([^"']+)["']/g, 'src="/$1"')
+        .replace(/href=["']https?:\/\/(?:futebol7k[^\/]+)\/([^"']+)["']/g, 'href="/$1"')
+        .replace(/action=["']https?:\/\/(?:futebol7k[^\/]+)\/([^"']+)["']/g, 'action="/$1"')
         .replace(/<title>[^<]*<\/title>/, '<title>Puro Play</title>')
         .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
