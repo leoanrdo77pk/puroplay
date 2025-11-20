@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
         fetched = await fetchUrl(url, reqHeaders);
         dominioUsado = dominio;
         break;
-      } catch (_) { /* tenta próximo domínio */ }
+      } catch (_) { }
     }
 
     if (!fetched) {
@@ -70,11 +70,9 @@ module.exports = async (req, res) => {
       delete headers['x-frame-options'];
       delete headers['content-security-policy'];
 
-      // Substituir URLs absolutas do assistir.biz por rotas /
       const dominioRegex = new RegExp(`https?:\/\/(?:${DOMINIOS.join('|')})\/`, 'g');
       html = html.replace(dominioRegex, '/');
 
-      // Substituir src/href/action contendo assistir.biz
       html = html
         .replace(/src=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'src="/$1"')
         .replace(/href=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'href="/$1"')
@@ -82,7 +80,7 @@ module.exports = async (req, res) => {
         .replace(/<title>[^<]*<\/title>/, '<title>Puro Play</title>')
         .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
-      // ================= AGRESSIVO ADBLOCK =================
+      // Adblock
       try {
         html = html.replace(/<iframe[^>]+src=["']https?:\/\/.*?(ads|pop|banner).*?["'][^>]*><\/iframe>/gi, '');
         html = html.replace(/<script[^>]+src=["']https?:\/\/.*?(ads|pop|banner).*?["'][^>]*><\/script>/gi, '');
@@ -90,36 +88,6 @@ module.exports = async (req, res) => {
       } catch(e) {
         console.error("Erro ao bloquear anúncios:", e);
       }
-      // ======================================================
-
-      // ================= CUSTOM HEADER =================
-      if (html.includes('<body')) {
-        html = html.replace('<body', `<body>
-<header id="custom-header">
-  <div style="
-    background:#111;
-    color:#fff;
-    height:500px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-  ">
-    <h1 style="font-size:64px; font-weight:bold; margin:0;">Puro Play</h1>
-    <nav style="margin-top:20px;">
-      <a href="/" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Home</a>
-      <a href="/series" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Séries</a>
-      <a href="/filmes" style="color:#fff;margin:0 15px;font-size:20px;text-decoration:none;">Filmes</a>
-    </nav>
-  </div>
-</header>
-<style>
-  body { padding-top:500px !important; }
-</style>
-`);
-      }
-      // =================================================
 
       res.writeHead(200, {
         ...headers,
@@ -129,7 +97,6 @@ module.exports = async (req, res) => {
       return res.end(html);
     }
 
-    // Outros tipos
     res.writeHead(respOrig.statusCode, respOrig.headers);
     res.end(data);
 
