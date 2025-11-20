@@ -3,7 +3,6 @@ const https = require('https');
 
 const DOMINIOS = [
   'assistir.biz',
-  // Adicione outros mirrors se necessário
 ];
 
 function fetchUrl(url, reqHeaders) {
@@ -49,7 +48,7 @@ module.exports = async (req, res) => {
 
     const { res: respOrig, data } = fetched;
 
-    // Proxy para arquivos de mídia
+    // Proxy para mídia
     if (/\.(ts|mp4|webm|ogg|jpg|jpeg|png|gif|css|js)$/i.test(path)) {
       https.get(`https://${dominioUsado}${path}`, { headers: reqHeaders }, (streamResp) => {
         res.writeHead(streamResp.statusCode, streamResp.headers);
@@ -70,15 +69,15 @@ module.exports = async (req, res) => {
       delete headers['x-frame-options'];
       delete headers['content-security-policy'];
 
+      // Substituir URLs absolutas por rotas locais
       const dominioRegex = new RegExp(`https?:\/\/(?:${DOMINIOS.join('|')})\/`, 'g');
       html = html.replace(dominioRegex, '/');
 
+      // NÃO altera título e NÃO mexe no favicon
       html = html
         .replace(/src=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'src="/$1"')
         .replace(/href=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'href="/$1"')
-        .replace(/action=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'action="/$1"')
-        .replace(/<title>[^<]*<\/title>/, '<title>Puro Play</title>')
-        .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
+        .replace(/action=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'action="/$1"');
 
       // Adblock
       try {
