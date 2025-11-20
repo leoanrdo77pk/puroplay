@@ -2,7 +2,7 @@
 const https = require('https');
 
 const DOMINIOS = [
-  'futebol7k.com',
+  'assistir.biz',
   // Adicione outros mirrors se necessário
 ];
 
@@ -70,19 +70,20 @@ module.exports = async (req, res) => {
       delete headers['x-frame-options'];
       delete headers['content-security-policy'];
 
+      // Substituir URLs absolutas do assistir.biz por rotas /
       const dominioRegex = new RegExp(`https?:\/\/(?:${DOMINIOS.join('|')})\/`, 'g');
       html = html.replace(dominioRegex, '/');
 
+      // Substituir src/href/action contendo assistir.biz
       html = html
-        .replace(/src=["']https?:\/\/(?:futebol7k[^\/]+)\/([^"']+)["']/g, 'src="/$1"')
-        .replace(/href=["']https?:\/\/(?:futebol7k[^\/]+)\/([^"']+)["']/g, 'href="/$1"')
-        .replace(/action=["']https?:\/\/(?:futebol7k[^\/]+)\/([^"']+)["']/g, 'action="/$1"')
+        .replace(/src=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'src="/$1"')
+        .replace(/href=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'href="/$1"')
+        .replace(/action=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'action="/$1"')
         .replace(/<title>[^<]*<\/title>/, '<title>Puro Play</title>')
         .replace(/<link[^>]*rel=["']icon["'][^>]*>/gi, '');
 
       // ================= AGRESSIVO ADBLOCK =================
       try {
-        // Remove iframes suspeitos, popups e anúncios
         html = html.replace(/<iframe[^>]+src=["']https?:\/\/.*?(ads|pop|banner).*?["'][^>]*><\/iframe>/gi, '');
         html = html.replace(/<script[^>]+src=["']https?:\/\/.*?(ads|pop|banner).*?["'][^>]*><\/script>/gi, '');
         html = html.replace(/<div[^>]+class=["'][^"']*(popup|modal|ads|banner)[^"']*["'][^>]*>.*?<\/div>/gi, '');
@@ -114,7 +115,7 @@ module.exports = async (req, res) => {
   </div>
 </header>
 <style>
-  body { padding-top:500px !important; } /* espaço para o header gigante */
+  body { padding-top:500px !important; }
 </style>
 `);
       }
