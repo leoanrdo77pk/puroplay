@@ -2,7 +2,7 @@
 const https = require('https');
 
 const DOMINIOS = [
-  'assistir.biz',
+  'superflix.fun',
 ];
 
 function fetchUrl(url, reqHeaders) {
@@ -75,9 +75,9 @@ module.exports = async (req, res) => {
 
       // NÃO altera título e NÃO mexe no favicon
       html = html
-        .replace(/src=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'src="/$1"')
-        .replace(/href=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'href="/$1"')
-        .replace(/action=["']https?:\/\/(?:assistir\.biz[^\/]*)\/([^"']+)["']/g, 'action="/$1"');
+        .replace(/src=["']https?:\/\/(?:superflix\.fun[^\/]*)\/([^"']+)["']/g, 'src="/$1"')
+        .replace(/href=["']https?:\/\/(?:superflix\.fun[^\/]*)\/([^"']+)["']/g, 'href="/$1"')
+        .replace(/action=["']https?:\/\/(?:superflix\.fun[^\/]*)\/([^"']+)["']/g, 'action="/$1"');
 
       // Adblock
       try {
