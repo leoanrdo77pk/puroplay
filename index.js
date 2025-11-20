@@ -3,12 +3,12 @@ const https = require('https');
 module.exports = async (req, res) => {
   try {
     const path = req.url === '/' ? '' : req.url;
-    const targetUrl = 'https://futebol7k.com' + path;
+    const targetUrl = 'https://assistir.biz/' + path;
 
     https.get(targetUrl, {
       headers: {
         'User-Agent': req.headers['user-agent'] || 'Mozilla/5.0',
-        'Referer': 'https://futebol7k.com/',
+        'Referer': 'https://assistir.biz/',
       }
     }, (resp) => {
       let data = '';
@@ -23,14 +23,14 @@ module.exports = async (req, res) => {
 
           // Reescrever URLs absolutas e relativas para seu domínio
           data = data
-            .replace(/https:\/\/futebol7k\.com\//g, '/')
-            .replace(/src="https:\/\/futebol7k\.com\/([^"]+)"/g, 'src="/$1"')
-            .replace(/src='https:\/\/futebol7k\.com\/([^']+)'/g, "src='/$1'")
-            .replace(/href="https:\/\/futebol7k\.com\/([^"]+)"/g, 'href="/$1"')
-            .replace(/href='https:\/\/futebol7k\.com\/([^']+)'/g, "href='/$1'")
-            .replace(/action="https:\/\/futebol7k\.com\/([^"]+)"/g, 'action="/$1"')
-            .replace(/url\(["']?https:\/\/futebol7k\.com\/(.*?)["']?\)/g, 'url("/$1")')
-            .replace(/<iframe([^>]*)src=["']https:\/\/futebol7k\.com\/([^"']+)["']/g, '<iframe$1src="/$2"')
+            .replace(/https:\/\/assistir\.biz\//g, '/')
+            .replace(/src="https:\/\/assistir\.biz\/([^"]+)"/g, 'src="/$1"')
+            .replace(/src='https:\/\/assistir\.biz\/([^']+)'/g, "src='/$1'")
+            .replace(/href="https:\/\/assistir\.biz\/([^"]+)"/g, 'href="/$1"')
+            .replace(/href='https:\/\/assistir\.biz\/([^']+)'/g, "href='/$1'")
+            .replace(/action="https:\/\/assistir\.biz\/([^"]+)"/g, 'action="/$1"')
+            .replace(/url\(["']?https:\/\/assistir\.biz\/(.*?)["']?\)/g, 'url("/$1")')
+            .replace(/<iframe([^>]*)src=["']https:\/\/assistir\.biz\/([^"']+)["']/g, '<iframe$1src="/$2"')
             .replace(/<base[^>]*>/gi, '');
 
           // Alterar título, remover ícone e inserir meta de verificação
